@@ -9,8 +9,8 @@ import {dequal} from 'dequal'
 import * as userClient from '../user-client'
 import {useAuth} from '../auth-context'
 
-const UserContext = React.createContext()
-UserContext.displayName = 'UserContext'
+const UserContext = React.createContext();
+UserContext.displayName = 'UserContext';
 
 function userReducer(state, action) {
   switch (action.type) {
@@ -54,19 +54,19 @@ function userReducer(state, action) {
 }
 
 function UserProvider({children}) {
-  const {user} = useAuth()
+  const {user} = useAuth();
   const [state, dispatch] = React.useReducer(userReducer, {
     status: null,
     error: null,
     storedUser: user,
     user,
-  })
-  const value = [state, dispatch]
+  });
+  const value = [state, dispatch];
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
 
 function useUser() {
-  const context = React.useContext(UserContext)
+  const context = React.useContext(UserContext);
   if (context === undefined) {
     throw new Error(`useUser must be used within a UserProvider`)
   }
@@ -82,23 +82,23 @@ function useUser() {
 // src/screens/user-profile.js
 // import {UserProvider, useUser} from './context/user-context'
 function UserSettings() {
-  const [{user, status, error}, userDispatch] = useUser()
+  const [{user, status, error}, userDispatch] = useUser();
 
-  const isPending = status === 'pending'
-  const isRejected = status === 'rejected'
+  const isPending = status === 'pending';
+  const isRejected = status === 'rejected';
 
-  const [formState, setFormState] = React.useState(user)
+  const [formState, setFormState] = React.useState(user);
 
-  const isChanged = !dequal(user, formState)
+  const isChanged = !dequal(user, formState);
 
   function handleChange(e) {
     setFormState({...formState, [e.target.name]: e.target.value})
   }
 
   function handleSubmit(event) {
-    event.preventDefault()
+    event.preventDefault();
     // 🐨 move the following logic to the `updateUser` function you create above
-    userDispatch({type: 'start update', updates: formState})
+    userDispatch({type: 'start update', updates: formState});
     userClient.updateUser(user, formState).then(
       updatedUser => userDispatch({type: 'finish update', updatedUser}),
       error => userDispatch({type: 'fail update', error}),
@@ -148,7 +148,7 @@ function UserSettings() {
         <button
           type="button"
           onClick={() => {
-            setFormState(user)
+            setFormState(user);
             userDispatch({type: 'reset'})
           }}
           disabled={!isChanged || isPending}
@@ -174,7 +174,7 @@ function UserSettings() {
 }
 
 function UserDataDisplay() {
-  const [{user}] = useUser()
+  const [{user}] = useUser();
   return <pre>{JSON.stringify(user, null, 2)}</pre>
 }
 
